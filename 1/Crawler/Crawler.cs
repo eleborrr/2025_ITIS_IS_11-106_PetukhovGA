@@ -28,7 +28,6 @@ class WebCrawler
 
     private bool IsValidUrl(string url)
     {
-        // Проверяем, что URL валиден и не является файлом (например, .pdf)
         if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
             return false;
 
@@ -54,7 +53,10 @@ class WebCrawler
 
             foreach (var link in doc.DocumentNode.SelectNodes("//a[@href]") ?? Enumerable.Empty<HtmlNode>())
             {
-                var href = link.GetAttributeValue("href", string.Empty);
+                var href = link.GetAttributeValue("href", string.Empty).Split('#')[0];
+                if (href == url)
+                    continue;
+                
                 var absoluteUrl = new Uri(new Uri(url), href).AbsoluteUri;
 
                 if (IsValidUrl(absoluteUrl))
@@ -82,7 +84,6 @@ class WebCrawler
 
         var text = doc.DocumentNode.InnerText;
 
-        // Удаляем лишние пробелы и переносы строк
         text = Regex.Replace(text, @"\s+", " ").Trim();
 
         return text;
@@ -168,7 +169,6 @@ class WebCrawler
                         nextLevelUrls.Add(link);
                 }
 
-                // Небольшая задержка чтобы не перегружать сервер
                 await Task.Delay(1000);
             }
 

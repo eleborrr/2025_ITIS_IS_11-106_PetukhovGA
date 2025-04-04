@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6ElGi6yir7Q=",
+  "dgSpecHash": "QZli2IjTuSE=",
   "success": true,
-  "projectFilePath": "C:\\repos\\IS\\IS\\Crawler\\Crawler.csproj",
+  "projectFilePath": "C:\\repos\\IS\\IS\\1\\Crawler\\Crawler.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\g.petukhov\\.nuget\\packages\\htmlagilitypack\\1.12.0\\htmlagilitypack.1.12.0.nupkg.sha512"
   ],

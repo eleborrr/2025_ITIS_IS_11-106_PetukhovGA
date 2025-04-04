@@ -75,11 +75,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\repos\\IS\\IS\\Crawler\\Crawler.csproj",
+      "projectUniqueName": "C:\\repos\\IS\\IS\\1\\Crawler\\Crawler.csproj",
       "projectName": "Crawler",
-      "projectPath": "C:\\repos\\IS\\IS\\Crawler\\Crawler.csproj",
+      "projectPath": "C:\\repos\\IS\\IS\\1\\Crawler\\Crawler.csproj",
       "packagesPath": "C:\\Users\\g.petukhov\\.nuget\\packages\\",
-      "outputPath": "C:\\repos\\IS\\IS\\Crawler\\obj\\",
+      "outputPath": "C:\\repos\\IS\\IS\\1\\Crawler\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\g.petukhov\\AppData\\Roaming\\NuGet\\NuGet.Config"
