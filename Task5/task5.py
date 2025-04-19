@@ -27,54 +27,50 @@ def vectorize_query(query, idf):
     query_vector = {}
     for term in query_terms:
         if term in idf:
-            query_vector[term] = idf[term]
+            tf = len(query_terms) / len(idf)
+            query_vector[term] = idf[term] * tf
     return query_vector
 
-def cosine_similarity(query_vector, doc_vector):
-    dot_product = 0
-    query_norm = 0
-    doc_norm = 0
+def cosine_similarity(query_vector, full_doc_vector):
+    dot_product = sum(
+        q_weight * full_doc_vector[term]
+        for term, q_weight in query_vector.items()
+        if term in full_doc_vector
+    )
     
-    for term, q_weight in query_vector.items():
-        if term in doc_vector:
-            dot_product += q_weight * doc_vector[term]
-        query_norm += q_weight ** 2
+    query_norm = math.sqrt(sum(q**2 for q in query_vector.values()))
+    doc_norm = math.sqrt(sum(d**2 for d in full_doc_vector.values()))
     
-    for weight in doc_vector.values():
-        doc_norm += weight ** 2
-    
-    if query_norm == 0 or doc_norm == 0:
-        return 0
-    
-    return dot_product / (math.sqrt(query_norm) * math.sqrt(doc_norm))
+    return dot_product / (query_norm * doc_norm) if (query_norm * doc_norm) != 0 else 0
 
 def vector_search(query, tfidf, idf, top_n=10):
     query_vector = vectorize_query(query, idf)
-    scores = defaultdict(float)
+    scores = {}
     
     relevant_docs = set()
     for term in query_vector:
-        if term in tfidf:
-            relevant_docs.update(tfidf[term].keys())
+        relevant_docs.update(tfidf.get(term, {}).keys())
     
     for doc_id in relevant_docs:
-        doc_vector = {}
-        for term in query_vector:
-            if term in tfidf and doc_id in tfidf[term]:
-                doc_vector[term] = tfidf[term][doc_id]
-        similarity = cosine_similarity(query_vector, doc_vector)
+        full_doc_vector = {}
+        for term in tfidf:
+            if doc_id in tfidf[term]:
+                full_doc_vector[term] = tfidf[term][doc_id]
+        
+        similarity = cosine_similarity(query_vector, full_doc_vector)
         scores[doc_id] = similarity
     
-    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-    return sorted_scores[:top_n]
+    return sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_n]
 
 tfidf = load_csv_to_dict('..\Task4\\tfidf.csv')
 idf = load_idf('..\Task4\\idf.csv')
 
 queries = [
-    "быстрая сортировка алгоритм",
-    "искусственный интеллект",
-    "когда дуров основал вконтакте"
+    "казань",
+    "суббота",
+    "погода",
+    "казань суббота",
+    "казань суббота погода"
 ]
 
 for query in queries:
@@ -83,40 +79,3 @@ for query in queries:
     for doc_id, score in results:
         print(f"Документ {doc_id}: вес = {score:.6f}")
     print()
-
-
-# Результаты для запроса 'быстрая сортировка алгоритм':
-# Документ 45: вес = 0.870932
-# Документ 7: вес = 0.870932
-# Документ 14: вес = 0.491404
-# Документ 55: вес = 0.491404
-# Документ 23: вес = 0.491404
-# Документ 91: вес = 0.491404
-# Документ 1: вес = 0.491404
-# Документ 65: вес = 0.491404
-# Документ 46: вес = 0.491404
-# Документ 77: вес = 0.491404
-
-# Результаты для запроса 'искусственный интеллект':
-# Документ 1: вес = 1.000000
-# Документ 23: вес = 1.000000
-# Документ 28: вес = 1.000000
-# Документ 36: вес = 1.000000
-# Документ 50: вес = 1.000000
-# Документ 35: вес = 0.999999
-# Документ 77: вес = 0.999999
-# Документ 49: вес = 0.999999
-# Документ 44: вес = 0.998808
-# Документ 2: вес = 0.997478
-
-# Результаты для запроса 'когда дуров основал вконтакте':
-# Документ 35: вес = 1.000000
-# Документ 36: вес = 0.999999
-# Документ 22: вес = 0.997024
-# Документ 25: вес = 0.962825
-# Документ 9: вес = 0.953900
-# Документ 10: вес = 0.952423
-# Документ 73: вес = 0.926151
-# Документ 13: вес = 0.872656
-# Документ 24: вес = 0.864068
-# Документ 2: вес = 0.711068
