@@ -54,7 +54,7 @@ def save_to_csv(data, filename, header):
             for subkey, value in values.items():
                 writer.writerow([key, subkey, value])
 
-directory = '..\Task2\processed_documents'
+directory = '..\\Task2\\processed_documents'
 documents = load_documents(directory)
 
 tf = calculate_tf(documents)
