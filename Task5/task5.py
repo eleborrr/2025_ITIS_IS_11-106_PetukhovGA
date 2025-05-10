@@ -27,7 +27,8 @@ def vectorize_query(query, idf):
     query_vector = {}
     for term in query_terms:
         if term in idf:
-            tf = len(query_terms) / len(idf)
+            tf = query_terms.count(term) / len(query_terms)
+            print(idf[term])
             query_vector[term] = idf[term] * tf
     return query_vector
 
@@ -66,15 +67,15 @@ tfidf = load_csv_to_dict('..\Task4\\tfidf.csv')
 idf = load_idf('..\Task4\\idf.csv')
 
 queries = [
-    "казань",
-    "суббота",
-    "погода",
-    "казань суббота",
-    "казань суббота погода"
+    "вк",
+    "статистика",
+    "россия",
+    "вк статистика",
+    "вк статистика россия"
 ]
 
 for query in queries:
-    results = vector_search(query, tfidf, idf)
+    results = vector_search(query, tfidf, idf, 100)
     print(f"Результаты для запроса '{query}':")
     for doc_id, score in results:
         print(f"Документ {doc_id}: вес = {score:.6f}")
